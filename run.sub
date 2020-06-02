@@ -158,7 +158,7 @@ DOCKERRUN_ARGS=(
 echo
 echo "Creating containers:"
 $SRUNl bash -c "echo -n 'Launching on node ' && hostname"
-$SRUNl nvidia-docker run --init -d "${DOCKERRUN_ARGS[@]}" --name $CONTNAME $VOLS "${VARS[@]}" $CONT bash -c 'rm -f /etc/shinit && sleep infinity' ; rv=$?
+$SRUNl docker run --init -d "${DOCKERRUN_ARGS[@]}" --name $CONTNAME $VOLS "${VARS[@]}" $CONT bash -c 'rm -f /etc/shinit && sleep infinity' ; rv=$?
 
 [[ $rv -ne 0 ]] && echo "ERR: Container launch failed." && exit $rv
 

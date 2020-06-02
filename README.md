@@ -1,3 +1,19 @@
+# 0. Configurations and benchmark running
+
+- `DGXSYSTEM=DGX1` 2-CPU 8-way GPU server with 20 cores per CPU, HT enabled (total cores per CPU = 40). 
+
+```shell script
+# Build docker image
+docker build --pull -t  mlperf-nvidia:image_classification .
+
+export NEXP=1
+export DATADIR=<path-to-location-of-ImageNet-dataset> 
+export LOGDIR=<path-to-where-you-want-to-store-logfiles>
+export DGXSYSTEM=DGX1
+
+./run.sub
+```
+
 # 1. Problem
 
 This problem uses the ResNet-50 CNN to do image classification.
