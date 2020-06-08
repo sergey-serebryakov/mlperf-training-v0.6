@@ -14,7 +14,7 @@ LABELSMOOTHING="0.1"
 LRSCHED="pow2"
 # Original Value = 72
 # NUMEPOCHS="72"
-NUMEPOCHS=${NUMEPOCHS:-72}
+NUMEPOCHS=${NUMEPOCHS:-4}
 echo "---------------------------------------"
 echo "MLBOX - NUMBER OF EPOCHS - ${NUMEPOCHS}"
 echo "---------------------------------------"
