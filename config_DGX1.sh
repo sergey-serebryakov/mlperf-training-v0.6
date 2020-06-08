@@ -14,7 +14,10 @@ LABELSMOOTHING="0.1"
 LRSCHED="pow2"
 # Original Value = 72
 # NUMEPOCHS="72"
-NUMEPOCHS="1"
+NUMEPOCHS=${NUMEPOCHS:-72}
+echo "---------------------------------------"
+echo "MLBOX - NUMBER OF EPOCHS - ${NUMEPOCHS}"
+echo "---------------------------------------"
 
 NETWORK="resnet-v1b-normconv-fl"
 export MXNET_CUDNN_SUPPLY_NORMCONV_CONSTANTS=1
