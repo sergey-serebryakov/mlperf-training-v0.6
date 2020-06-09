@@ -22,6 +22,16 @@ NEXP=${NEXP:-5} # Default number of times to run the benchmark
 SYSLOGGING=1
 SYS_LOG_GET="'import mlperf_compliance; from mlperf_log_utils import mlperf_submission_log; mlperf_submission_log(mlperf_compliance.constants.$BENCHMARK_NAME)'"
 
+NUMEPOCHS=${NUMEPOCHS:-80}
+echo "---------------------------------------"
+echo "MLBOX - NUMBER OF EPOCHS - ${NUMEPOCHS}"
+echo "---------------------------------------"
+
+DOCKER_MEMORY=${DOCKER_MEMORY:-""}
+echo "---------------------------------------"
+echo "MLBOX - DOCKER_MEMORY - '${DOCKER_MEMORY}'"
+echo "---------------------------------------"
+
 ## DO NOT CHANGE ANYTHING BELOW -- DL params are in run_and_time.sh and config_<system>.sh files 
 
 ## Load system-specific parameters for benchmark
@@ -55,7 +65,7 @@ mkdir -p $(dirname "${LOGFILE_BASE}")
 ## Docker params
 CONTVOLS="-v $DATADIR:/data -v $LOGDIR:/results"
 NV_GPU="${NVIDIA_VISIBLE_DEVICES:-$(seq 0 $((${SLURM_NTASKS_PER_NODE:-${DGXNGPU}}-1)) | tr '\n' ',' | sed 's/,$//')}"
-DOCKEREXEC="env NV_GPU=${NV_GPU} docker run --init --rm --net=host --uts=host --ipc=host --ulimit stack=67108864 --ulimit memlock=-1 --name=cont_${SLURM_JOB_ID} --security-opt seccomp=unconfined $IBDEVICES"
+DOCKEREXEC="env NV_GPU=${NV_GPU} docker run --init --rm --net=host --uts=host --ipc=host --ulimit stack=67108864 --ulimit memlock=-1 ${DOCKER_MEMORY} --name=cont_${SLURM_JOB_ID} --security-opt seccomp=unconfined $IBDEVICES"
 
 ## Get version of the OS
 export MLPERF_HOST_OS="$(cat /etc/issue | head -1 | cut -f1-3 -d" ") / $(cat /etc/dgx-release | grep -E "DGX_PRETTY_NAME|DGX_OTA_VERSION" |cut -f2 -d= |cut -f2 -d '"' |paste -sd' ')"
@@ -163,6 +173,7 @@ for nrun in `seq 1 $NEXP`; do
     fi
       export DOCKERENV=(
          "-e" "DGXSYSTEM=$DGXSYSTEM"
+         "-e" "NUMEPOCHS=$NUMEPOCHS"
          "-e" "MULTI_NODE=$MULTI_NODE"
          "-e" "SLURM_JOB_ID=$SLURM_JOB_ID"
          "-e" "SLURM_NTASKS_PER_NODE=$SLURM_NTASKS_PER_NODE"
