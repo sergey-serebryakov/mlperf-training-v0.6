@@ -14,6 +14,7 @@
 
 import os
 from argparse import ArgumentParser
+from datetime import datetime
 from utils import DefaultBoxes, Encoder, COCODetection, SSDCropping
 from base_model import Loss
 from opt_loss import OptLoss
@@ -729,8 +730,8 @@ def train300_mlperf_coco(args):
 
                 avg_samples_per_sec = num_elapsed_samples * N_gpu / elapsed_time
 
-                print("Iteration: {:6d}, Loss function: {:5.3f}, Average Loss: {:.3f}, avg. samples / sec: {:.2f}"\
-                            .format(iter_num, loss.item(), avg_loss, avg_samples_per_sec), end="\n")
+                print("Timestamp: {}, Iteration: {:6d}, Loss function: {:5.3f}, Average Loss: {:.3f}, avg. samples / sec: {:.2f}"\
+                            .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), iter_num, loss.item(), avg_loss, avg_samples_per_sec), end="\n")
 
                 last_printed_iter = iter_num
                 start_elapsed_time = time.time()
