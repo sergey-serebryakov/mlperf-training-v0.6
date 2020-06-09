@@ -21,6 +21,12 @@ SEED=${SEED:-$(od -A n -t d -N 3 /dev/urandom)} # Allows passing SEED in, which 
 #CODEDIR=${CODEDIR:-$(readlink -f $(dirname ${BASH_SOURCE[0]}))} # SLURM normally copies these files to someplace in /var by default, so best to set this explicitly
 #SRCDIR=${SRCDIR:-${CODEDIR}/${BENCHMARK}/mxnet}
 
+DOCKER_MEMORY=${DOCKER_MEMORY:-""}
+echo "---------------------------------------"
+echo "MLBOX - DOCKER_MEMORY - '${DOCKER_MEMORY}'"
+echo "---------------------------------------"
+
+
 # FIXME: having the container running as non-root isn't yet tested
 CONTAINER_UID=0
 CONTAINER_GID=0
@@ -76,6 +82,7 @@ VARS=(
        -e "SEED"
        -e "MLPERF_HOST_OS"
        -e "DGXSYSTEM=${DGXSYSTEM}"
+       -e "NUMEPOCHS=${NUMEPOCHS}"
        -e "SLURM_JOB_NUM_NODES=${SLURM_JOB_NUM_NODES}"
        -e "SLURM_NTASKS_PER_NODE=${SLURM_NTASKS_PER_NODE}"
        -e "OMPI_MCA_mca_base_param_files=/dev/shm/mpi/${SLURM_JOB_ID}/mca_params.conf"
@@ -158,7 +165,7 @@ DOCKERRUN_ARGS=(
 echo
 echo "Creating containers:"
 $SRUNl bash -c "echo -n 'Launching on node ' && hostname"
-$SRUNl docker run --init -d "${DOCKERRUN_ARGS[@]}" --name $CONTNAME $VOLS "${VARS[@]}" $CONT bash -c 'rm -f /etc/shinit && sleep infinity' ; rv=$?
+$SRUNl docker run --init -d "${DOCKERRUN_ARGS[@]}" "${DOCKER_MEMORY}" --name $CONTNAME $VOLS "${VARS[@]}" $CONT bash -c 'rm -f /etc/shinit && sleep infinity' ; rv=$?
 
 [[ $rv -ne 0 ]] && echo "ERR: Container launch failed." && exit $rv
 
